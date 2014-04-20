@@ -1,0 +1,178 @@
+/*
+实现平台：Windows8.1+VS2013
+问题描述：给定一个升序的integer型链表，删除其中重复的元素
+如：1->2->2->3->4,输出1->3->4
+*/
+#include<iostream>
+#include<cassert>
+#include<ctime>
+#include<map>
+using namespace std;
+
+class node
+{
+public:
+	int value;
+	class node *next;
+	node(int i):value(i),next(NULL){}
+};
+
+typedef node* List;
+//方法一：先遍历一遍，并用一个map记录每个元素出现的次数，第二次遍历时删除。
+void DeleteDuplicate(List *list)
+{
+	assert(*list != NULL);
+	map<int, int> c;
+	node *p = *list;
+	while (p != NULL)
+	{
+		if (c.count(p->value) > 0)
+			c[p->value]++;
+		else
+			c[p->value] = 1;
+
+		p = p->next;
+	}
+	p = *list;
+	node *temp = NULL;
+	while (p != NULL && c[p->value] > 1)
+	{
+		p = p->next;
+	}
+	if (p != *list)
+	{
+		if (NULL == p)
+		{
+			while ((temp = *list) != NULL)
+			{
+				*list = (*list)->next;
+				delete temp;
+			}
+			*list = NULL;
+		}
+		else
+		{
+			while ((temp = *list) != p)
+			{
+				*list = (*list)->next;
+				delete temp;
+			}
+			*list = p;
+		}
+	}
+	p = (*list)->next;
+	node *p1 = *list;
+	while (p != NULL)
+	{
+		if (c[p->value] > 1)
+		{
+			temp = p;
+			p1->next = p->next;
+			p = p->next;
+			delete temp;
+		}
+		else
+		{
+			p1 = p;
+			p = p->next;
+		}
+	}
+}
+//方法二：一次遍历并删除
+void DeleteDuplicate1(List *list)
+{
+	assert(NULL != *list);
+	node *begin = new node(-1);
+	begin->next = *list;
+	node *p = begin;
+	node *current = begin->next->next;
+	bool pMove = true;
+	if (NULL == current)
+		return;
+	while (current != NULL)
+	{
+		if (current->value == p->next->value)
+		{
+			current = current->next;
+			pMove = false;
+		}	
+		else
+		{
+			if (pMove == true)
+			{
+				p = p->next;
+				current = p->next->next;
+			}
+			else
+			{
+				node *p1 = p->next;
+				p->next = current;
+				current = p->next->next;
+				while (p1 != p->next)
+				{
+					node *temp = p1;
+					p1 = p1->next;
+					delete temp;
+				}
+				pMove = true;
+			}
+		}
+	}
+	if (p->next->next != NULL)
+	{
+		node *p1 = p->next;
+		p->next = NULL;
+		while (p1)
+		{
+			node *temp = p1;
+			p1 = p1->next;
+			delete temp;
+		}
+	}
+	*list = begin->next;
+}
+void InsertNode(List *list, int key)
+{
+	if (*list == NULL)
+	{
+		*list = new node(key);
+		return;
+	}
+	else
+	{
+		node *p1 = *list;
+		node *p2 = *list;
+		while (p1 != NULL && p1->value < key)
+		{
+			p2 = p1;
+			p1 = p1->next;
+		}
+		node *temp = new node(key);
+		if (p1 == *list)
+		{
+			temp->next = *list;
+			*list = temp;
+		}
+		else if (NULL == p1)
+		{
+			p2->next = temp;
+		}
+		else
+		{
+			temp->next = p1;
+			p2->next = temp;
+		}		
+	}
+}
+
+int main()
+{
+	List list = NULL;
+	srand((unsigned)time(NULL));
+	for (int i = 0; i < 5; i++)
+	{
+		InsertNode(&list, rand() % 5);
+	}
+	DeleteDuplicate1(&list);
+	system("pause");
+}
