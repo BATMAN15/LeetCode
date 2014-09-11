@@ -1,0 +1,71 @@
+#include<iostream>
+#include<ctime>
+using namespace std;
+
+const int N = 1000;
+class Quick_Sort{
+public:
+	void QuickSort(int Array[], int left, int right)
+	{
+		if (left == right)
+			return;
+		if (left + 1 == right)
+		{
+			if (Array[right] < Array[left])
+				swap(Array[left], Array[right]);
+			return;
+		}
+		int value = Media3(Array, left, right);
+		int i = left, j = right - 1;
+		for (;;)
+		{
+			while (Array[++i] < value);
+			while (value < Array[--j]);
+			if (i < j)
+				swap(Array[i], Array[j]);
+			else
+				break;
+		}
+		swap(Array[i], Array[right - 1]);
+		QuickSort(Array, left, i - 1);
+		QuickSort(Array, i + 1, right);
+	}
+private:
+	void swap(int &a, int &b)
+	{
+		if (a != b)
+		{
+			int temp = a;
+			a = b;
+			b = temp;
+		}
+	}
+	int Media3(int Array[], int left, int right)
+	{
+		int center = ((left + right) >> 1);
+		if (Array[center] < Array[left])
+			swap(Array[left], Array[center]);
+		if (Array[right] < Array[left])
+			swap(Array[left], Array[right]);
+		if (Array[right] < Array[center])
+			swap(Array[center], Array[right]);
+
+		swap(Array[center], Array[right - 1]);
+		return Array[right - 1];
+	}
+};
+
+int main()
+{
+	int *Array = new int[N];
+	srand((unsigned)time(nullptr));
+	for (int i = 0; i < N; ++i)
+		Array[i] = rand() % (N + 100);
+
+	Quick_Sort Q;
+	Q.QuickSort(Array, 0, N - 1);
+	for (int i = 0; i < N; ++i)
+		cout << Array[i] << "  ";
+	cout << endl;
+	system("pause");
+}
