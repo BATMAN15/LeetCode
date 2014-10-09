@@ -1,0 +1,91 @@
+/*
+Given two words (start and end), and a dictionary, find all shortest transformation sequence(s) from start to end, such that:
+
+Only one letter can be changed at a time
+Each intermediate word must exist in the dictionary
+For example,
+
+Given:
+start = "hit"
+end = "cog"
+dict = ["hot","dot","dog","lot","log"]
+Return
+  [
+    ["hit","hot","dot","dog","cog"],
+    ["hit","hot","lot","log","cog"]
+  ]
+Note:
+All words have the same length.
+All words contain only lowercase alphabetic characters.
+*/
+
+class Solution {
+public:
+	vector<vector<string>> findLadders(string start, string end, unordered_set<string> &dict) 
+	{
+		map<string, vector<string> > trace;
+		dict.insert(start);
+		dict.insert(end);
+		paths.clear();
+		for (unordered_set<string>::const_iterator iter = dict.begin(); iter != dict.end(); ++iter)
+			trace[*iter] = vector<string>();
+		vector<unordered_set<string> > que(2);
+		int cur = 0;
+		int pre = 1;
+		que[cur].insert(start);
+		while (1)
+		{
+			cur = !cur;
+			pre = !pre;
+			for (unordered_set<string>::const_iterator iter = que[pre].begin(); iter != que[pre].end(); ++iter)
+				dict.erase(*iter);
+			que[cur].clear();
+			for (unordered_set<string>::const_iterator iter = que[pre].begin(); iter != que[pre].end(); ++iter)
+			{
+				for (int i = 0; i < static_cast<int>((*iter).size()); ++i)
+				{
+					string word = *iter;
+					int stop = word[i] - 'a';
+					for (int j = (stop + 1) % 26; j != stop; j = (j + 1) % 26)
+					{
+						word[i] = 'a' + j;
+						if (dict.find(word) != dict.end())
+						{
+							trace[word].push_back(*iter);
+							que[cur].insert(word);
+						}
+					}
+				}
+			}
+			if (que[cur].empty())
+				return paths;
+			if (que[cur].find(end) != que[cur].end())
+				break;
+		}
+		vector<string> path;
+		path.clear();
+		buildpath(path, trace, end);
+
+		return paths;
+	}
+private:
+	void buildpath(vector<string> &path, map<string, vector<string> > &trace, string end)
+	{
+		path.push_back(end);
+		if (trace[end].empty())
+		{
+			vector<string> temp = path;
+			reverse(temp.begin(), temp.end());
+			paths.push_back(temp);
+			path.pop_back();
+			return;
+		}
+		for (vector<string>::const_iterator iter = trace[end].begin(); iter != trace[end].end(); ++iter)
+		{
+			buildpath(path, trace, *iter);
+		}
+		path.pop_back();
+	}
+private:
+	vector<vector<string> > paths;
+};
