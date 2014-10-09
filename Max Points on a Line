@@ -1,0 +1,42 @@
+/*
+Given n points on a 2D plane, find the maximum number of points that lie on the same straight line.
+*/
+
+class Solution {
+public:
+	int maxPoints(vector<Point> &points) {
+		if (points.size() == 0)
+			return 0;
+		int MAX = 1;
+		map<double, int> maps;
+		vector<Point>::iterator p;
+		vector<Point>::iterator q;
+		for (p = points.begin(); p != points.end(); ++p)
+		{
+			maps.clear();
+			int count = 1;
+			for (q = p + 1; q != points.end(); ++q)
+			{
+				if (p->x == q->x && p->y == q->y)
+					++count;
+				else
+					++maps[Slope(p, q)];
+			}
+			int temp = 0;
+			for (map<double, int>::iterator t = maps.begin(); t != maps.end(); ++t)
+			{
+				if (t->second > temp)
+					temp = t->second;
+			}
+			MAX = (count + temp) > MAX ? (count + temp) : MAX;
+		}
+		return MAX;
+	}
+private:
+	double Slope(vector<Point>::iterator p, vector<Point>::iterator q)
+	{
+		if (p->x == q->x)
+			return numeric_limits<double>::max();
+		return static_cast<double>(p->y - q->y) / static_cast<double>(p->x - q->x);
+	}
+};
