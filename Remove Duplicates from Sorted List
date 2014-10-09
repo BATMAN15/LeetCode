@@ -1,0 +1,33 @@
+/*
+Given a sorted linked list, delete all duplicates such that each element appear only once.
+
+For example,
+Given 1->1->2, return 1->2.
+Given 1->1->2->3->3, return 1->2->3.
+*/
+
+class Solution {
+public:
+	ListNode *deleteDuplicates(ListNode *head) {
+		if (head == nullptr)
+			return nullptr;
+		ListNode *pre = head;
+		ListNode *p = head->next;
+		while (p)
+		{
+			if (p->val != pre->val)
+			{
+				pre = p;
+				p = p->next;
+			}
+			else
+			{
+				ListNode *temp = p;
+				pre->next = p->next;
+				p = pre->next;
+				delete temp;
+			}
+		}
+		return head;
+	}
+};
