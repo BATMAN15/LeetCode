@@ -1,0 +1,46 @@
+/*
+Given a singly linked list where elements are sorted in ascending order, convert it to a height balanced BST.
+*/
+
+
+class Solution {
+public:
+	TreeNode *sortedListToBST(ListNode *head) {
+		if (head == nullptr)
+			return nullptr;
+		
+		TreeNode *rootnode = nullptr;
+		buildBFT(head, nullptr, &rootnode);
+		return rootnode;
+	}
+private:
+	ListNode* midnode(ListNode* head, ListNode* tail)
+	{
+		if (head->next == tail)
+			return head;
+		ListNode *p = head;
+		ListNode *q = head;
+		while(q != tail && q->next != tail)
+		{
+			p = p->next;
+			q = q->next->next;
+		}
+		return p;
+	}
+	TreeNode* buildBFT(ListNode *head, ListNode *tail, TreeNode **root)
+	{
+		if (head == tail)
+			return nullptr;
+		ListNode *middle = midnode(head, tail);
+		TreeNode *temp = nullptr;
+		if (middle != tail)
+		{
+			temp = new TreeNode(middle->val); 
+			if (*root == nullptr)
+				*root = temp;
+			temp->left = buildBFT(head, middle, root);
+			temp->right = buildBFT(middle->next, tail, root);
+		}
+		return temp;
+	}
+};
