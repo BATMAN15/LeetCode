@@ -1,0 +1,64 @@
+/*
+Two elements of a binary search tree (BST) are swapped by mistake.
+
+Recover the tree without changing its structure.
+
+Note:
+A solution using O(n) space is pretty straight forward. Could you devise a constant space solution?
+confused what "{1,#,2,3}" means? > read more on how binary tree is serialized on OJ.
+
+
+OJ's Binary Tree Serialization:
+The serialization of a binary tree follows a level order traversal, where '#' signifies a path terminator where no node exists below.
+
+Here's an example:
+   1
+  / \
+ 2   3
+    /
+   4
+    \
+     5
+The above binary tree is serialized as "{1,2,3,#,#,4,#,#,5}".
+*/
+
+class Solution {
+public:
+	void recoverTree(TreeNode *root) {
+		if (root == nullptr || (root->left == nullptr && root->right == nullptr))
+			return;
+		stack<TreeNode*> st;
+		TreeNode *prenode = nullptr;
+		TreeNode *mistake1 = nullptr;
+		TreeNode *mistake2 = nullptr;
+		TreeNode *p = root;
+		while (p || !st.empty())
+		{
+			while (p)
+			{
+				st.push(p);
+				p = p->left;
+			}
+			if (!st.empty())
+			{
+				p = st.top();
+				st.pop();
+				if (prenode && p->val < prenode->val)
+				{
+					if (mistake1 == nullptr)
+					{
+						mistake1 = prenode;
+						mistake2 = p;
+					}
+					else
+						mistake2 = p;
+				}
+				prenode = p;
+				p = p->right;
+			}
+		}
+		int key = mistake1->val;
+		mistake1->val = mistake2->val;
+		mistake2->val = key;
+	}
+};
