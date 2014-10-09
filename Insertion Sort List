@@ -1,0 +1,37 @@
+/*
+Sort a linked list using insertion sort.
+*/
+
+class Solution {
+public:
+	ListNode *insertionSortList(ListNode *head) 
+	{
+		if (head == NULL || head->next == NULL)
+			return head;
+		ListNode *p = head->next;
+		head->next = NULL;
+		while (p != NULL)
+		{
+			ListNode *p1 = NULL;
+			ListNode *p2 = head;
+			ListNode *temp = p;
+			p = p->next;
+			while (p2 != NULL && p2->val < temp->val)
+			{
+				p1 = p2;
+				p2 = p2->next;
+			}
+			if (p2 == head)
+			{
+				temp->next = head;
+				head = temp;
+			}
+			else
+			{
+				temp->next = p2;
+				p1->next = temp;
+			}
+		}
+		return head;
+	}
+};
