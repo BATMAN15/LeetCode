@@ -1,0 +1,38 @@
+/*
+Given inorder and postorder traversal of a tree, construct the binary tree.
+
+Note:
+You may assume that duplicates do not exist in the tree.
+*/
+
+class Solution {
+public:
+	TreeNode *buildTree(vector<int> &inorder, vector<int> &postorder) {
+		if (inorder.size() < 1 || inorder.size() != postorder.size())
+			return nullptr;
+		TreeNode *root = nullptr;
+		createTree(inorder, 0, inorder.size()-1, postorder, 0, postorder.size()-1, &root);
+		return root;
+	}
+private:
+	TreeNode* createTree(vector<int> &inorder, int inStart, int inEnd, vector<int> &postorder, int postStart, int postEnd, TreeNode **root)
+	{
+	    if (inStart > inEnd)
+			return nullptr;
+			
+		int index = 0;
+		for (int i = inStart; i <= inEnd; ++i)
+		if (inorder[i] == postorder[postEnd])
+		{
+			index = i;
+			break;
+		}
+		int length = index - inStart;
+		TreeNode *temp = new TreeNode(postorder[postEnd]);
+		if (*root == nullptr)
+			*root = temp;
+		temp->left = createTree(inorder, inStart, index - 1, postorder, postStart, postStart + length -1, root);
+		temp->right = createTree(inorder, index + 1, inEnd, postorder, postStart + length, postEnd - 1, root);
+		return temp;
+	}
+};
