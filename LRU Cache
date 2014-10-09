@@ -1,0 +1,114 @@
+/*
+Design and implement a data structure for Least Recently Used (LRU) cache. It should support the following operations: get and set.
+
+get(key) - Get the value (will always be positive) of the key if the key exists in the cache, otherwise return -1.
+set(key, value) - Set or insert the value if the key is not already present. When the cache reached its capacity, it should invalidate the least recently used item before inserting a new item.
+*/
+
+class LRUCache{
+public:
+	LRUCache(int capacity) 
+	{
+		head = tail = nullptr;
+		Map.clear();
+		size = capacity;
+	}
+	int get(int key) 
+	{
+		map<int, pnode>::iterator it = Map.find(key);
+		if (it != Map.end())
+		{
+			pnode p = it->second;
+			NodetoHead(p);
+			return p->val;
+		}
+		return -1;
+	}
+
+	void set(int key, int value) 
+	{
+		map<int, pnode>::iterator it = Map.find(key);
+		if (it != Map.end())
+		{
+			pnode p = it->second;
+			p->val = value;
+			NodetoHead(p);
+		}
+		else
+		{
+			if (Map.size() < size)
+			{
+				pnode newnode = new Node();
+				newnode->val = value;
+				newnode->prev = nullptr;
+				if (head == nullptr && tail == nullptr)
+				{
+					newnode->next = nullptr;
+					head = tail = newnode;
+				}
+				else
+				{
+					newnode->next = head;
+					head->prev = newnode;
+					head = newnode;
+				}
+				Map[key] = newnode;
+			}
+			else
+			{
+				pnode p = tail;
+				p->val = value;
+				map<int, pnode>::iterator it;
+				for (it = Map.begin(); it != Map.end(); ++it)
+				{
+					if (it->second == tail)
+						break;
+				}
+				Map.erase(it);
+				Map[key] = p;
+				if (p != head)
+				{
+					tail = tail->prev;
+					tail->next = nullptr;
+					p->prev = nullptr;
+					p->next = head;
+					head->prev = p;
+					head = p;
+				}
+			}
+		}
+	}
+private:
+	struct Node{
+		int val;
+		struct Node *next;
+		struct Node *prev;
+		//Node(int v, struct Node *n, struct Node *p) :val(v), next(n), prev(p){}
+	};
+	typedef struct Node node;
+	typedef node* pnode;
+	pnode head, tail;
+	map<int, pnode>Map;
+	int size;
+	private:
+		void NodetoHead(const pnode p)
+		{
+			if (p != head)
+			{
+				if (p == tail)
+				{
+					tail = p->prev;
+					tail->next = nullptr;
+				}
+				else
+				{
+					p->prev->next = p->next;
+					p->next->prev = p->prev;
+				}
+				p->prev = nullptr;
+				p->next = head;
+				head->prev = p;
+				head = p;
+			}
+		}
+};
