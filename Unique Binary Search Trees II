@@ -1,0 +1,63 @@
+/*
+Given n, generate all structurally unique BST's (binary search trees) that store values 1...n.
+
+For example,
+Given n = 3, your program should return all 5 unique BST's shown below.
+
+   1         3     3      2      1
+    \       /     /      / \      \
+     3     2     1      1   3      2
+    /     /       \                 \
+   2     1         2                 3
+confused what "{1,#,2,3}" means? > read more on how binary tree is serialized on OJ.
+
+
+OJ's Binary Tree Serialization:
+The serialization of a binary tree follows a level order traversal, where '#' signifies a path terminator where no node exists below.
+
+Here's an example:
+   1
+  / \
+ 2   3
+    /
+   4
+    \
+     5
+The above binary tree is serialized as "{1,2,3,#,#,4,#,#,5}".
+*/
+
+class Solution {
+public:
+	vector<TreeNode *> generateTrees(int n) {
+		vector<TreeNode *> result;
+		dfs(result, 1, n);
+		return result;
+	}
+private:
+	void dfs(vector<TreeNode *> &result, int start, int end)
+	{
+		if (start > end)
+		{
+			result.push_back(nullptr);
+			return;
+		}
+		else
+		{
+			for (int i = start; i <= end; ++i)
+			{
+				vector<TreeNode *>lefts;
+				dfs(lefts, start, i - 1);
+				vector<TreeNode *>rights;
+				dfs(rights, i+1, end);
+				for (int x = 0; x < lefts.size(); ++x)
+				for (int y = 0; y < rights.size(); ++y)
+				{
+					TreeNode *temp = new TreeNode(i);
+					temp->left = lefts[x];
+					temp->right = rights[y];
+					result.push_back(temp);
+				}
+			}
+		}
+	}
+};
