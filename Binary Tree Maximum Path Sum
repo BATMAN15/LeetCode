@@ -1,0 +1,111 @@
+/*
+Given a binary tree, find the maximum path sum.
+
+The path may start and end at any node in the tree.
+
+For example:
+Given the below binary tree,
+
+       1
+      / \
+     2   3
+Return 6.
+*/
+
+class Solution {
+public:
+	int maxPathSum(TreeNode *root) 
+	{
+		int maxSum = -9999;
+		queue<TreeNode*> que;
+		map<TreeNode*, int>tal;
+		while (!que.empty())
+			que.pop();
+
+		tal.clear();
+		childrenSum(root, tal);
+		que.push(root);
+		while (!que.empty())
+		{
+			TreeNode *T = que.front();
+			int sum = tal[T];
+			if (sum > maxSum)
+				maxSum = sum;
+			que.pop();
+			if (T->left != nullptr)
+				que.push(T->left);
+			if (T->right != nullptr)
+				que.push(T->right);
+		}
+		return maxSum;
+	}
+private:
+	int childrenSum(TreeNode *root, map<TreeNode*, int>&tal)
+	{
+		if (root->left == nullptr && root->right == nullptr)
+		{
+			tal[root] = root->val;
+			return root->val;
+		}
+		else
+		{
+			if (root->left == nullptr)
+			{
+				int right = childrenSum(root->right, tal);
+				if (right < 0)
+				{
+					tal[root] = root->val;
+					return root->val;
+				}	
+				else
+				{
+					tal[root] = right + root->val;
+					return right + root->val;
+				}
+					
+			}
+			else if (root->right == nullptr)
+			{
+				int left = childrenSum(root->left, tal);
+				if (left < 0)
+				{
+					tal[root] = root->val;
+					return root->val;
+				}
+				else
+				{
+					tal[root] = left + root->val;
+					return left + root->val;
+				}	
+			}
+			else
+			{
+				int right = childrenSum(root->right,tal);
+				int left = childrenSum(root->left,tal);
+				if (right < 0 && left < 0)
+				{
+					tal[root] = root->val;
+					return root->val;
+				}
+				else if (right < 0)
+				{
+					tal[root] = left + root->val;
+					return left + root->val;
+				}	
+				else if (left < 0)
+				{
+					tal[root] = right + root->val;
+					return right + root->val;
+				}	
+				else
+				{
+					tal[root] = left + right + root->val;
+					if (left>right)
+						return left + root->val;
+					else
+						return right + root->val;
+				}
+			}
+		}
+	}
+};
