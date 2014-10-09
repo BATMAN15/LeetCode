@@ -1,0 +1,57 @@
+/*
+Given a singly linked list L: L0→L1→…→Ln-1→Ln,
+reorder it to: L0→Ln→L1→Ln-1→L2→Ln-2→…
+
+You must do this in-place without altering the nodes' values.
+
+For example,
+Given {1,2,3,4}, reorder it to {1,4,2,3}.
+*/
+
+class Solution {
+public:
+	void reorderList(ListNode *head) 
+	{
+		if (NULL == head || NULL == head->next || NULL == head->next->next)
+			return;
+
+		ListNode *p = head->next;
+		ListNode *newhead = NULL; 
+		int count = 0;
+		while (p != NULL)
+		{
+			count++;
+			ListNode *temp = new ListNode(p->val);
+			temp->next = newhead;
+			newhead = temp;
+			p = p->next;
+		}
+		p = head;
+		int k = count >> 1;
+		while (k-->0)
+		{
+			ListNode *temp = newhead;
+			newhead = newhead->next;
+			temp->next = p->next;
+			p->next = temp;
+			p = p->next->next;
+		}
+		if (count %2 == 1)
+			p = p->next;
+
+		ListNode *q = p->next;
+		p->next = NULL;
+		while (q != NULL)
+		{
+			ListNode *temp = q;
+			q = q->next;
+			delete temp;
+		}
+		while (newhead != NULL)
+		{
+			ListNode *temp = newhead;
+			newhead = newhead->next;
+			delete temp;
+		}
+	}
+};
