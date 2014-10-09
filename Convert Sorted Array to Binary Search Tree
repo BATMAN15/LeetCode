@@ -1,0 +1,32 @@
+/*
+Given an array where elements are sorted in ascending order, convert it to a height balanced BST.
+*/
+
+class Solution {
+public:
+	TreeNode *sortedArrayToBST(vector<int> &num) {
+		int size = num.size();
+		if (size < 1)
+			return nullptr;
+		TreeNode *root = nullptr;
+		builtTree(num, 0, size, &root);
+		return root;
+	}
+private:
+	TreeNode *builtTree(vector<int> &num, int start, int end, TreeNode **root)
+	{
+		if (start >= end)
+			return nullptr;
+		int middle = start + ((end - start) >> 1);
+		TreeNode *temp = nullptr;
+		if (middle != end)
+		{
+			temp = new TreeNode(num[middle]);
+			if (*root == nullptr)
+				*root = temp;
+			temp->left = builtTree(num, start, middle, root);
+			temp->right = builtTree(num, middle + 1, end, root);
+		}
+		return temp;
+	}
+};
