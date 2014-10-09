@@ -1,0 +1,97 @@
+/*
+Sort a linked list in O(n log n) time using constant space complexity.
+*/
+
+class Solution {
+public:
+	ListNode *sortList(ListNode *head) 
+	{
+		if (head == NULL)
+			return NULL;
+		return MergeSort(head);
+	}
+	ListNode *MergeSort(ListNode *head)
+	{
+		ListNode *p1, *p2, *pre;
+		if (!head||!head->next)
+			return head;
+		p1 = head;
+		p2 = head;
+		pre = NULL;
+		while (p2 != NULL && p2->next != NULL)
+		{
+			p2 = p2->next->next;
+			pre = p1;
+			p1 = p1->next;
+		}
+		pre->next = NULL;
+		ListNode *Llist = MergeSort(head);
+		ListNode *Rlist = MergeSort(p1);
+		return Merge(Llist, Rlist);
+	}
+	ListNode *Merge(ListNode *left, ListNode *right)
+	{
+		ListNode *p = NULL;
+		ListNode *q = NULL;
+		while (left&&right)
+		{
+			if (left->val < right->val)
+			{
+				if (p == NULL)
+				{
+					p = left;
+					q = p;
+				}
+				else
+				{
+					q->next = left;
+					q = q->next;
+				}
+				left = left->next;
+			}
+			else
+			{
+				if (p == NULL)
+				{
+					p = right;
+					q = p;
+				}
+				else
+				{
+					q->next = right;
+					q = q->next;
+				}
+				right = right->next;
+			}
+		}
+		while (left)
+		{
+			if (p == NULL)
+			{
+				p = left;
+				q = p;
+			}
+			else
+			{
+				q->next = left;
+				q = q->next;
+			}
+			left = left->next;
+		}
+		while (right)
+		{
+			if (p == NULL)
+			{
+				p = right;
+				q = p;
+			}
+			else
+			{
+				q->next = right;
+				q = q->next;
+			}
+			right = right->next;
+		}
+		return p;
+	}
+};
