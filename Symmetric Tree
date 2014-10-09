@@ -1,0 +1,59 @@
+/*
+Given a binary tree, check whether it is a mirror of itself (ie, symmetric around its center).
+
+For example, this binary tree is symmetric:
+
+    1
+   / \
+  2   2
+ / \ / \
+3  4 4  3
+But the following is not:
+    1
+   / \
+  2   2
+   \   \
+   3    3
+Note:
+Bonus points if you could solve it both recursively and iteratively.
+
+confused what "{1,#,2,3}" means? > read more on how binary tree is serialized on OJ.
+
+
+OJ's Binary Tree Serialization:
+The serialization of a binary tree follows a level order traversal, where '#' signifies a path terminator where no node exists below.
+
+Here's an example:
+   1
+  / \
+ 2   3
+    /
+   4
+    \
+     5
+The above binary tree is serialized as "{1,2,3,#,#,4,#,#,5}".
+*/
+
+class Solution {
+public:
+	bool isSymmetric(TreeNode *root) {
+		if (root == nullptr)
+			return true;
+		if (root->left == nullptr && root->right == nullptr)
+			return true;
+		return ismiror(root->left, root->right);
+	}
+private:
+	bool ismiror(TreeNode *n1, TreeNode *n2)
+	{
+		if (n1 == nullptr && n2 == nullptr)
+			return true;
+		if (n1 == nullptr && n2 != nullptr)
+			return false;
+		if (n1 != nullptr && n2 == nullptr)
+			return false;
+		if (n1->val != n2->val)
+			return false;
+		return ismiror(n1->left, n2->right) && ismiror(n1->right, n2->left);
+	}
+};
