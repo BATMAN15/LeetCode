@@ -1,0 +1,49 @@
+/*
+Merge two sorted linked lists and return it as a new list. The new list should be made by splicing together the nodes of the first two lists.
+*/
+
+class Solution {
+public:
+	ListNode *mergeTwoLists(ListNode *l1, ListNode *l2) 
+	{
+		if (l1 == nullptr)
+			return l2;
+		if (l2 == nullptr)
+			return l1;
+		ListNode *head = nullptr;
+		ListNode *p = nullptr;
+		ListNode *q = nullptr;
+		if (l1->val > l2->val)
+		{
+			head = l2;
+			q = l1;
+		}
+		else
+		{
+			head = l1;
+			q = l2;
+		}
+		p = head->next;
+		ListNode *pre = head;
+		while (p && q)
+		{
+			if (p->val > q->val)
+			{
+				pre->next = q;
+				pre = pre->next;
+				q = q->next;
+			}
+			else
+			{
+				pre->next = p;
+				pre = pre->next;
+				p = p->next;
+			}
+		}
+		if (p)
+			pre->next = p;
+		if (q)
+			pre->next = q;
+		return head;
+	}
+};
