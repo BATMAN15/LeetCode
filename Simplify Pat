@@ -1,0 +1,57 @@
+/*
+Given an absolute path for a file (Unix-style), simplify it.
+
+For example,
+path = "/home/", => "/home"
+path = "/a/./b/../../c/", => "/c"
+click to show corner cases.
+
+Corner Cases:
+Did you consider the case where path = "/../"?
+In this case, you should return "/".
+Another corner case is the path might contain multiple slashes '/' together, such as "/home//foo/".
+In this case, you should ignore redundant slashes and return "/home/foo".
+*/
+
+class Solution {
+public:
+	string simplifyPath(string path) {
+		stack<string> st;
+		path.push_back('/');
+		string result;
+		string dir;
+		for (int i = 0; i < path.size(); ++i)
+		{
+			if (path[i] == '/')
+			{
+				if (dir == "..")
+				{
+					if (!st.empty())
+						st.pop();
+				}
+				else if (dir != "." && dir != "")
+					st.push(dir);
+				dir.clear();
+			}
+			else
+				dir.push_back(path[i]);
+		}
+		deque<string> de;
+		while (!st.empty())
+		{
+			de.push_front(st.top());
+			st.pop();
+		}
+		int i = 0;
+		while (i < de.size())
+		{
+			result.append("/");
+			result.append(de[i++]);
+		}
+		if (result.empty())
+			result.append("/");
+		else if (result[result.size()-1] == '/')
+			result.pop_back();
+		return result;
+	}
+};
