@@ -1,0 +1,54 @@
+/*
+The set [1,2,3,…,n] contains a total of n! unique permutations.
+
+By listing and labeling all of the permutations in order,
+We get the following sequence (ie, for n = 3):
+
+"123"
+"132"
+"213"
+"231"
+"312"
+"321"
+Given n and k, return the kth permutation sequence.
+
+Note: Given n will be between 1 and 9 inclusive.
+*/
+
+class Solution{
+public:
+	string getPermutation(int n, int k)
+	{
+		string result;
+		result.clear();
+		if (n < 0 || k < 0)
+			return result;
+		int data[10];
+		data[0] = 1;
+		bool use[10];
+		memset(use, true, sizeof(use));
+		int i;
+		for (i = 1; i < 10; ++i)
+			data[i] = i*data[i - 1];
+		i = n - 1;
+		k--;
+		while (i >= 0)
+		{
+			int temp = k / data[i];
+			int j = 0;
+			for (j = 1; j < 10; ++j)
+			{
+				if (use[j])
+					temp--;
+				if (temp < 0)
+					break;
+			}
+			char ch = j + '0';
+			result.push_back(ch);
+			use[j] = false;
+			k = k%data[i];
+			--i;
+		}
+		return result;
+	}
+};
