@@ -1,0 +1,20 @@
+/*
+Implement int sqrt(int x).
+
+Compute and return the square root of x.
+*/
+
+class Solution {
+public:
+    int sqrt(int x) {
+        double x0 = 1.0;
+        double check;
+        do{
+            x0 = (x0 + x / x0)/2.0;
+            check = x - x0*x0;
+        }while(check > 0.00001 || check < -0.00001);
+        
+        return x0;
+        
+    }
+};
