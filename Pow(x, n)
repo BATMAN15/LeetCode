@@ -1,0 +1,54 @@
+/*
+Implement pow(x, n).
+*/
+
+class Solution {
+public:
+	double pow(double x, int n) {
+		if (n == 0)
+			return 1;
+		if (x == 0)
+			return 0;
+
+		bool nflag = true;
+		bool xflag = true;
+		if (x < 0)
+		{
+			if (n % 2 != 0)
+				xflag = false;
+			x = -x;
+		}
+		if (n < 0)
+		{
+			n = -n;
+			nflag = false;
+		}
+		double result = 1;
+		double t = 1;
+		while (n > 1)
+		{
+			double r = 1;
+			if (n % 2 != 0)
+				r = x;
+			x *= x;
+			t *= r;
+			n = n >> 1;
+		}
+		x *= t;
+		if (xflag)
+		{
+			if (nflag)
+				return x;
+			else
+				return 1 / x;
+		}
+		else
+		{
+			if (nflag)
+				return -x;
+			else
+				return -1 / x;
+		}
+		
+	}
+};
