@@ -1,0 +1,61 @@
+/*
+Given a collection of intervals, merge all overlapping intervals.
+
+For example,
+Given [1,3],[2,6],[8,10],[15,18],
+return [1,6],[8,10],[15,18].
+*/
+
+class Solution {
+public:
+	vector<Interval> merge(vector<Interval> &intervals) {
+		vector<Interval> result;
+		result.clear();
+		if (intervals.empty())
+			return result;
+		vector<Interval>::iterator p = intervals.begin();
+		result.push_back(*p);
+		for (++p; p != intervals.end(); ++p)
+		{
+			result = insert(result, *p);
+		}
+		return result;
+	}
+private:
+	vector<Interval> insert(vector<Interval> &intervals, Interval newInterval)
+	{
+		vector<Interval>::iterator p;
+		bool flag = false;
+		vector<Interval> result;
+		for (p = intervals.begin(); p != intervals.end(); ++p)
+		{
+			if (p->end < newInterval.start)
+			{
+				result.push_back(*p);
+				continue;
+			}
+			else if (p->start > newInterval.end)
+			{
+				result.push_back(newInterval);
+				flag = true;
+				break;
+			}	
+			else if (p->start <= newInterval.start && p->end >= newInterval.end)
+			{
+				flag = true;
+				break;
+			}
+			else
+			{
+				newInterval.start = p->start < newInterval.start ? p->start : newInterval.start;
+				newInterval.end = p->end > newInterval.end ? p->end : newInterval.end;
+			}
+		}
+		if (!flag)
+			result.push_back(newInterval);
+		else
+		while (p != intervals.end())
+			result.push_back(*p++);
+		return result;
+	}
+};
