@@ -1,0 +1,86 @@
+/*
+Write a program to solve a Sudoku puzzle by filling the empty cells.
+
+Empty cells are indicated by the character '.'.
+
+You may assume that there will be only one unique solution.
+
+
+A sudoku puzzle...
+
+
+...and its solution numbers marked in red.
+*/
+
+class Solution {
+public:
+	void solveSudoku(vector<vector<char> > &table) 
+	{
+		flag = false;
+		BackTracking(0, 0, table);
+	}
+private:
+	bool flag;
+	void BackTracking(int row, int column, vector<vector<char> > &board)
+	{
+		if (row > 8)
+		{
+			flag = true;
+			return;
+		}
+		if (board[row][column] != '.')
+		{
+			if (column < 8)
+				BackTracking(row, column + 1, board);
+			else
+				BackTracking(row + 1, 0, board);
+		}
+		else
+		{
+			set<int> temp = fillnum(row, column, board);
+			for (set<int>::iterator p = temp.begin(); p != temp.end(); ++p)
+			{
+				board[row][column] = *p + '0';
+				if (column < 8)
+					BackTracking(row, column + 1, board);
+				else
+					BackTracking(row + 1, 0, board);
+				if (flag == true)
+					return;
+				board[row][column] = '.';
+			}
+		}
+	}
+	set<int> fillnum(int row, int column, vector<vector<char> > &board)
+	{
+		set<int> result;
+		result.clear();
+		for (int j = 0; j < 9; ++j)
+		{
+			if (board[row][j] != '.')
+				result.insert(board[row][j] - '0');
+		}
+		for (int i = 0; i < 9; ++i)
+		{
+			if (board[i][column] != '.')
+				result.insert(board[i][column] - '0');
+		}
+		int m = row / 3;
+		int n = column / 3;
+		for (int i = 0; i < 3; ++i)
+		{
+			for (int j = 0; j < 3; ++j)
+			{
+				if (board[m * 3 + i][n * 3 + j] != '.')
+					result.insert(board[m * 3 + i][n * 3 + j] - '0');	
+			}
+		}
+		set<int> res;
+		for (int i = 1; i < 10; ++i)
+		{
+			if (result.find(i) == result.end())
+				res.insert(i);
+		}
+		return res;
+	}
+};
