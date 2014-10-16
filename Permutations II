@@ -1,0 +1,50 @@
+/*
+Given a collection of numbers that might contain duplicates, return all possible unique permutations.
+
+For example,
+[1,1,2] have the following unique permutations:
+[1,1,2], [1,2,1], and [2,1,1].
+*/
+
+class Solution {
+public:
+	vector<vector<int> > permuteUnique(vector<int> &num)
+	{
+		vector<vector<int> > result;
+		result.clear();
+		if (num.empty())
+			return result;
+		for (int i = 0; i < num.size(); ++i)
+			Map[i] = false;
+		sort(num.begin(), num.end());
+		vector<int> temp;
+		dfs(temp, num, result);
+		return result;
+	}
+private:
+	map<int, bool> Map;
+	void dfs(vector<int> temp, vector<int> &num, vector<vector<int> > &result)
+	{
+		if (temp.size() == num.size())
+		{
+			result.push_back(temp);
+			return;
+		}
+		set<int> Set;
+		for (int i = 0; i < num.size(); ++i)
+		{
+			if (Map[i] == false)
+			{
+				if (Set.find(num[i]) == Set.end())
+				{
+					Set.insert(num[i]);
+					temp.push_back(num[i]);
+					Map[i] = true;
+					dfs(temp, num, result);
+					temp.pop_back();
+					Map[i] = false;
+				}
+			}
+		}
+	}
+};
