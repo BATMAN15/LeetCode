@@ -1,0 +1,42 @@
+/*
+Follow up for N-Queens problem.
+
+Now, instead outputting board configurations, return the total number of distinct solutions.
+
+*/
+
+class Solution {
+public:
+	int totalNQueens(int n) {
+		vector<int> board(n, 0);
+		int count = 0;
+		Traversal(0, n, board, count);
+		return count;
+	}
+private:
+	void Traversal(int row, int n, vector<int> board, int &count)
+	{
+		if (row == n)
+		{
+			count++;
+			return;
+		}
+		for (int j = 0; j < n; ++j)
+		{
+			board[row] = j;
+			if (check(row, board))
+				Traversal(row + 1, n, board, count);
+		}
+	}
+
+	bool check(int row, vector<int> board)
+	{
+		for (int i = 0; i < row; ++i)
+		{
+			int temp = abs(board[i] - board[row]);
+			if (temp == 0 || temp == row - i)
+				return false;
+		}
+		return true;
+	}
+};
