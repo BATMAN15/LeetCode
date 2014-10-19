@@ -1,0 +1,48 @@
+/*
+Given a digit string, return all possible letter combinations that the number could represent.
+
+A mapping of digit to letters (just like on the telephone buttons) is given below.
+
+
+
+Input:Digit string "23"
+Output: ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"].
+Note:
+Although the above answer is in lexicographical order, your answer could be in any order you want.
+*/
+
+class Solution {
+public:
+	vector<string> letterCombinations(string digits) {
+		map<int, string> maps;
+		maps.insert(make_pair(2, "abc"));
+		maps.insert(make_pair(3, "def"));
+		maps.insert(make_pair(4, "ghi"));
+		maps.insert(make_pair(5, "jkl"));
+		maps.insert(make_pair(6, "mno"));
+		maps.insert(make_pair(7, "pqrs"));
+		maps.insert(make_pair(8, "tuv"));
+		maps.insert(make_pair(9, "wxyz"));
+		vector<string> result;
+		result.clear();
+		string s;
+		int start = 0;
+		dfs(maps, digits, start, result, s);
+		return result;
+	}
+private:
+	void dfs(map<int, string> &maps, string &digits, int start, vector<string> &res, string s)
+	{
+		if (start == digits.size())
+		{
+			res.push_back(s);
+			return;
+		}
+		for (int i = 0; i < maps[digits[start]-'0'].size(); ++i)
+		{
+			s.push_back(maps[digits[start]-'0'][i]);
+			dfs(maps, digits, start + 1, res, s);
+			s.pop_back();
+		}
+	}
+};
