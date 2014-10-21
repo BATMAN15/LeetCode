@@ -1,0 +1,42 @@
+/*
+There are two sorted arrays A and B of size m and n respectively. Find the median of the two sorted arrays. The overall run time complexity should be O(log (m+n)).
+*/
+
+class Solution {
+public:
+	double findMedianSortedArrays(int A[], int m, int B[], int n)
+	{
+		stack<int> st;
+		int i = 0;
+		int j = 0;
+		int count = (m + n) / 2 + 1;;
+		double median;
+		while (st.size() < count)
+		{
+			if (i < m && j < n)
+			{
+				if (A[i] < B[j])
+					st.push(A[i++]);
+				else
+					st.push(B[j++]);
+			}
+			else if (i < m)
+				st.push(A[i++]);
+			else
+				st.push(B[j++]);
+		}
+
+		if ((m + n) % 2 == 0)
+		{
+			int a = st.top();
+			st.pop();
+			int b = st.top();
+			st.pop();
+			median = (a + b) / 2.0;
+		}
+		else
+			median = st.top();
+
+		return median;
+	}
+};
